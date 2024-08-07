@@ -28,4 +28,4 @@ jobs:
         uses: docker/build-push-action@v4
         with:
           push: true
-          tags: ${{ secrets.DOCKER_USERNAME }}/processout-helloworld:latest
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/processout-helloworld:latest
