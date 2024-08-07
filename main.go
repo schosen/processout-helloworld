@@ -5,6 +5,7 @@ import (
 	"log"
 	"net/http"
 	"time"
+	"math/rand"
 
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
@@ -27,12 +28,24 @@ var (
 		},
 		[]string{"path"},
 	)
+	errorsTotal = prometheus.NewCounterVec(
+		prometheus.CounterOpts{
+			Name: "http_errors_total",
+			Help: "Total number of HTTP errors",
+		},
+		[]string{"path"},
+	)
 )
+
+func randomBool() bool {
+	return rand.Intn(2) == 0
+}
 
 func init() {
 	// Register metrics
 	prometheus.MustRegister(requestsTotal)
 	prometheus.MustRegister(responseDuration)
+	prometheus.MustRegister(errorsTotal)
 }
 
 func helloHandler(w http.ResponseWriter, r *http.Request) {
@@ -40,6 +53,14 @@ func helloHandler(w http.ResponseWriter, r *http.Request) {
 
 	// Increment request counter
 	requestsTotal.WithLabelValues(r.URL.Path).Inc()
+
+	simulateError := randomBool()
+
+	if simulateError {
+		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+		errorsTotal.WithLabelValues(r.URL.Path).Inc()
+		return
+	}
 
 	// Write response
 	fmt.Fprintln(w, "Hello, World!")
