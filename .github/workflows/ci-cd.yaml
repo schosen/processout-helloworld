@@ -39,4 +39,5 @@ jobs:
         run: kubectl get pods -A
 
       - name: Deploy to Minikube
-        run: ./deploy.sh
+        working-directory: ${{ github.workspace }}/PROJECT_FOLDER
+        run: bash ./deploy.sh
