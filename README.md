@@ -134,4 +134,4 @@ kubectl port-forward pod/processout-helloworld-5bbbbf9c8d-7jc5x 8080:8080 -n che
 ```
 # With more time...
 - I would have deployed grafana to visualize the metrics
-- apply unit testing to terraform to avoid user errors, this could then be applied as an integration step in the pipeline and the bash script replaced with terraform
+- I would apply unit testing to terraform to avoid user errors, this could then be applied as an integration step in the pipeline and the bash script replaced with terraform
