@@ -43,4 +43,4 @@ jobs:
 
       - name: Deploy to Minikube
         working-directory: manifests
-        run: manifests/deploy.sh
+        run: ./deploy.sh
