@@ -14,12 +14,6 @@ To download dependencies run:
 go mod tidy
 ```
 
-
-<!-- To run this app
-```
-go run main.go
-``` -->
-
 ## Docker
 
 Docker-compose is configured for local development to run this application:
@@ -29,7 +23,7 @@ docker-compose build
 docker-compose up
 ```
 
-Alternivaely to build and run the docker container using the docker command
+Alternatively to build and run the docker container using the docker command
 ```
 docker build -t processout-helloworld .
 
@@ -42,11 +36,13 @@ Prometheus metrics are exposed for this app. To view follow the above build and 
 http://localhost:8080/metrics
 `
 
-This application has prometheus monitoring. The following metrics are:
+This application has prometheus monitoring. The following custom metrics are:
 
 - **requestsTotal**: a counter that tracks the total number of HTTP requests received by the server
 - **responseDuration**: a histogram that measures the duration of HTTP responses
 -  **errorTotal**: a counter that tracks total number of errors returned by server (the errors have been simulated using a random boolean function. When set to true, the handler returns an "Internal Server Error" and increments the errorsTotal counter)
+
+There are also "out the box" metrics related to memory consumption, cpu consumption, etc. e.g. `process_cpu_seconds_total` (Total user and system CPU time spent in seconds) and `process_virtual_memory_bytes` (Virtual memory size in bytes)
 
 ## CI/ CD
 This application uses github action for its continous integration pipeline, the Docker image is pushed to docker hub when new code is merged to main.
@@ -96,7 +92,7 @@ processout-helloworld-5bbbbf9c8d-7jc5x   1/1     Running   0          99s
 
 
 ### Option 2 terraform:
-Terraform is used to create a application resources. I personally think this isnt needed / overkill for local kubernetes deployment the however if using cloud computing service like aws eks IaC would be used to provision resources. It's a tooling I don't have experience with so wanted to give it a try.
+Terraform is used to create application resources. I personally think this isnt needed / overkill for local kubernetes deployment however if using cloud computing service like aws eks IaC could be used to provision resources. It's a technology I don't have experience with so wanted to give it a try.
 
 Start you minikube cluster
 ```
@@ -134,4 +130,5 @@ Forward a local port (e.g., 8080) to the port on the pod (e.g., 8080):
 kubectl port-forward pod/processout-helloworld-5bbbbf9c8d-7jc5x 8080:8080 -n checkout
 
 ```
-
+# With more time...
+- I would have deployed grafana to visualize the metrics
