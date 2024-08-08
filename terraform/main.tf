@@ -5,12 +5,12 @@ resource "kubernetes_namespace" "checkout" {
   }
 }
 
-resource "kubernetes_deployment" processout-helloworld" {
+resource "kubernetes_deployment" "processout-helloworld" {
   metadata {
-    name      = processout-helloworld"
+    name      = "processout-helloworld"
     namespace = kubernetes_namespace.checkout.metadata[0].name
     labels = {
-      app = processout-helloworld"
+      app = "processout-helloworld"
     }
   }
 
@@ -19,20 +19,20 @@ resource "kubernetes_deployment" processout-helloworld" {
 
     selector {
       match_labels = {
-        app = processout-helloworld"
+        app = "processout-helloworld"
       }
     }
 
     template {
       metadata {
         labels = {
-          app = processout-helloworld"
+          app = "processout-helloworld"
         }
       }
 
       spec {
         container {
-          name  = processout-helloworld"
+          name  = "processout-helloworld"
           image = "${var.docker_username}/processout-helloworld:latest"
 
           port {
@@ -44,9 +44,9 @@ resource "kubernetes_deployment" processout-helloworld" {
   }
 }
 
-resource "kubernetes_service" processout-helloworld" {
+resource "kubernetes_service" "processout-helloworld" {
   metadata {
-    name      = processout-helloworld-service"
+    name      = "processout-helloworld-service"
     namespace = kubernetes_namespace.checkout.metadata[0].name
   }
 
