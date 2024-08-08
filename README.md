@@ -48,14 +48,10 @@ This application has prometheus monitoring. The following metrics are:
 - **responseDuration**: a histogram that measures the duration of HTTP responses
 -  **errorTotal**: a counter that tracks total number of errors returned by server (the errors have been simulated using a random boolean function. When set to true, the handler returns an "Internal Server Error" and increments the errorsTotal counter)
 
-If I had more time I would add cpu / memory usage metrics
-<!-- add more on metrics on container memory / cpu usage  -->
-
 ## CI/ CD
-This application uses github action for its continous integration pipeline, the Docker image is pushed to docker hub when new code is merged to main
+This application uses github action for its continous integration pipeline, the Docker image is pushed to docker hub when new code is merged to main.
 
-TODO: Add how we deploy to minikube in the pipeline
-
+I then create a minikube cluster, test the cluster by running a kubectl command then deploy the go server to the cluster using the manifests.
 
 ## Kubernetes deployment
 This application can be deployed to minikube cluster.
@@ -65,7 +61,7 @@ Minikube was chosen as it sets up a single node Kubernetes cluster on your local
 
 I've shared two ways to deploy;
 
-Option 1 Manifests:
+### Option 1 Manifests:
 I have created Kubernetes Manifests allows you to specify the desired state of your application which can be deployed into your Kubernetes cluster. To deploy using manifests:
 
 Start you minikube cluster
@@ -99,7 +95,7 @@ processout-helloworld-5bbbbf9c8d-7jc5x   1/1     Running   0          99s
 ```
 
 
-Option 2 terraform:
+### Option 2 terraform:
 Terraform is used to create a application resources. I personally think this isnt needed / overkill for local kubernetes deployment the however if using cloud computing service like aws eks IaC would be used to provision resources. It's a tooling I don't have experience with so wanted to give it a try.
 
 Start you minikube cluster
@@ -119,7 +115,23 @@ terraform plan
 
 To apply config run
 ```
-terraform apply
+terraform apply -var="docker_username=schosen"
 ```
 
 # Accessing the kubernetes pod locally
+To access the pod as if it were on your local machine you can port forward
+
+Identify the pods name
+```
+# kubectl get pods -n checkout
+
+NAME                                     READY   STATUS    RESTARTS   AGE
+processout-helloworld-5bbbbf9c8d-7jc5x   1/1     Running   0          5m
+```
+
+Forward a local port (e.g., 8080) to the port on the pod (e.g., 8080):
+```
+kubectl port-forward pod/processout-helloworld-5bbbbf9c8d-7jc5x 8080:8080 -n checkout
+
+```
+

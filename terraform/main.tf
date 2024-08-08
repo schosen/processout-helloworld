@@ -52,7 +52,7 @@ resource "kubernetes_service" "processout-helloworld" {
 
   spec {
     selector = {
-      app = kubernetes_deployment.helloworld.spec[0].template[0].metadata[0].labels.app
+      app = kubernetes_deployment.processout-helloworld.spec[0].template[0].metadata[0].labels.app
     }
 
     port {
