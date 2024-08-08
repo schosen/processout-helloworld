@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: processout-helloworld
+  namespace: checkout
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: processout-helloworld
+  template:
+    metadata:
+      labels:
+        app: processout-helloworld
+    spec:
+      containers:
+      - name: processout-helloworld
+        image: schosen/processout-helloworld:latest
+        ports:
+        - containerPort: 8080

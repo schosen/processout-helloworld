@@ -1,9 +1,11 @@
-name: Build and Push to Docker hub
+name: Push to Docker hub deploy to Minikube
 
 on:
   push:
     branches:
       - main
+    paths-ignore:
+      - 'README.md'
 
 jobs:
   docker-push:
@@ -29,3 +31,12 @@ jobs:
         with:
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/processout-helloworld:latest
+
+      - name: Start minikube
+        uses: medyagh/setup-minikube@latest
+
+      - name: Test cluster kubectl
+          run: kubectl get pods -A
+
+      - name: Deploy to Minikube
+        run: ./deploy.sh
