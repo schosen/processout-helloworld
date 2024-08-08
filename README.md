@@ -55,14 +55,14 @@ go test -v
 ```
 
 ## CI/ CD
-This application uses github action for its continous integration pipeline, tests are run then the Docker image is pushed to docker hub when new code is merged to main.
+This application uses github action for its continous integration pipeline. When new code is merged to main this triggers the pipeline. Tests are run and then the Docker image is pushed to docker hub.
 
-I then create a minikube cluster, the cluster is checked by running a kubectl commands, then the pipeline deploys the go server to the cluster using the manifests. This could be used if you want to run integration tests for the service later on. Ideally I would deploy to a cloud managed kubernetes service like AWS EKS which I currently don't have access to.
+I then create a minikube cluster, the cluster is checked by running a kubectl commands. The pipeline then deploys the go server to the cluster using the manifests. This could be used if you want to run integration tests for the service later on. Ideally I would deploy to a cloud managed kubernetes service like AWS EKS which I currently don't have access to.
 
 ## Kubernetes deployment
 This application can be deployed to minikube cluster.
 
-Minikube was chosen as it sets up a single node Kubernetes cluster on your local machine which is a good alternative if you don't have acess to cloud services to test.
+Minikube was chosen as it sets up a single node Kubernetes cluster on your local machine which is a good alternative if you don't have access to cloud services to test.
 
 
 I've shared two ways to deploy:
