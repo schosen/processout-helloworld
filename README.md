@@ -40,14 +40,22 @@ This application has prometheus monitoring. The following custom metrics are:
 
 - **requestsTotal**: a counter that tracks the total number of HTTP requests received by the server
 - **responseDuration**: a histogram that measures the duration of HTTP responses
--  **errorTotal**: a counter that tracks total number of errors returned by server (the errors have been simulated using a random boolean function. When set to true, the handler returns an "Internal Server Error" and increments the errorsTotal counter)
+-  **errorTotal**: a counter that tracks total number of errors returned by server (When set to true, the handler returns an "Internal Server Error" and increments the errorsTotal counter) Currently is hardcoded to false. In the real world you would replace the boolean with some logic.
 
 There are also "out the box" metrics related to memory consumption, cpu consumption, etc. e.g. `process_cpu_seconds_total` (Total user and system CPU time spent in seconds) and `process_virtual_memory_bytes` (Virtual memory size in bytes)
 
 The above metrics are key to understanding the health of the service. Typically at minumum you want to measure the 4 golden signals for any service. Latency, Traffic, Errors and Saturation
 
+## Tests
+I have included test that checks whether the service returns status 200 code and checks whether the response body includes "Hello World"
+
+To run tests:
+```
+go test -v
+```
+
 ## CI/ CD
-This application uses github action for its continous integration pipeline, the Docker image is pushed to docker hub when new code is merged to main.
+This application uses github action for its continous integration pipeline, tests are run then the Docker image is pushed to docker hub when new code is merged to main.
 
 I then create a minikube cluster, test the cluster by running a kubectl command then deploy the go server to the cluster using the manifests. This could be used if you want to run integration tests for the service later on. Ideally I would deploy to a cloud managed kubernetes service like AWS EKS which I currently don't have access to.
 

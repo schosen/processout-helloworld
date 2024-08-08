@@ -1,7 +1,3 @@
-# Build Stage
-# First pull Golang image
-# FROM golang:1.17-alpine as builder
-
 FROM golang:1.20-alpine AS builder
 
 # Set environment variable

@@ -4,14 +4,12 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"io"
 	"time"
-	"math/rand"
-
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 )
 
-// Define metrics
 var (
 	requestsTotal = prometheus.NewCounterVec(
 		prometheus.CounterOpts{
@@ -37,10 +35,6 @@ var (
 	)
 )
 
-func randomBool() bool {
-	return rand.Intn(2) == 0
-}
-
 func init() {
 	// Register metrics
 	prometheus.MustRegister(requestsTotal)
@@ -54,7 +48,7 @@ func helloHandler(w http.ResponseWriter, r *http.Request) {
 	// Increment request counter
 	requestsTotal.WithLabelValues(r.URL.Path).Inc()
 
-	simulateError := randomBool()
+	simulateError := false
 
 	if simulateError {
 		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
@@ -62,8 +56,7 @@ func helloHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Write response
-	fmt.Fprintln(w, "Hello, World!")
+	io.WriteString(w, "Hello, World!")
 
 	// Observe response duration
 	duration := time.Since(start).Seconds()
