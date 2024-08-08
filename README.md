@@ -16,7 +16,7 @@ go mod tidy
 
 ## Docker
 
-Docker-compose is configured for local development to run this application:
+Docker-compose is configured for local development. This useful mainly for multi-container environments, so may be needed in future. To run this application:
 ```
 docker-compose build
 
@@ -57,7 +57,7 @@ go test -v
 ## CI/ CD
 This application uses github action for its continous integration pipeline, tests are run then the Docker image is pushed to docker hub when new code is merged to main.
 
-I then create a minikube cluster, test the cluster by running a kubectl command then deploy the go server to the cluster using the manifests. This could be used if you want to run integration tests for the service later on. Ideally I would deploy to a cloud managed kubernetes service like AWS EKS which I currently don't have access to.
+I then create a minikube cluster, the cluster is checked by running a kubectl commands, then the pipeline deploys the go server to the cluster using the manifests. This could be used if you want to run integration tests for the service later on. Ideally I would deploy to a cloud managed kubernetes service like AWS EKS which I currently don't have access to.
 
 ## Kubernetes deployment
 This application can be deployed to minikube cluster.
