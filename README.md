@@ -4,9 +4,9 @@ This is a simple hello world HTTP server
 
 You must have the following installed to run locally.
 - Docker and docker-compose
-- go
-- minikube
-- kubectl
+- Go
+- Minikube
+- Kubectl
 - Terraform
 
 To download dependencies run:
@@ -44,10 +44,12 @@ This application has prometheus monitoring. The following custom metrics are:
 
 There are also "out the box" metrics related to memory consumption, cpu consumption, etc. e.g. `process_cpu_seconds_total` (Total user and system CPU time spent in seconds) and `process_virtual_memory_bytes` (Virtual memory size in bytes)
 
+The above metrics are key to understanding the health of the service. Typically at minumum you want to measure the 4 golden signals for any service. Latency, Traffic, Errors and Saturation
+
 ## CI/ CD
 This application uses github action for its continous integration pipeline, the Docker image is pushed to docker hub when new code is merged to main.
 
-I then create a minikube cluster, test the cluster by running a kubectl command then deploy the go server to the cluster using the manifests.
+I then create a minikube cluster, test the cluster by running a kubectl command then deploy the go server to the cluster using the manifests. This could be used if you want to run integration tests for the service later on. Ideally I would deploy to a cloud managed kubernetes service like AWS EKS which I currently don't have access to.
 
 ## Kubernetes deployment
 This application can be deployed to minikube cluster.
@@ -55,7 +57,7 @@ This application can be deployed to minikube cluster.
 Minikube was chosen as it sets up a single node Kubernetes cluster on your local machine which is a good alternative if you don't have acess to cloud services to test.
 
 
-I've shared two ways to deploy;
+I've shared two ways to deploy:
 
 ### Option 1 Manifests:
 I have created Kubernetes Manifests allows you to specify the desired state of your application which can be deployed into your Kubernetes cluster. To deploy using manifests:
@@ -92,7 +94,7 @@ processout-helloworld-5bbbbf9c8d-7jc5x   1/1     Running   0          99s
 
 
 ### Option 2 terraform:
-Terraform is used to create application resources. I personally think this isnt needed / overkill for local kubernetes deployment however if using cloud computing service like aws eks IaC could be used to provision resources. It's a technology I don't have experience with so wanted to give it a try.
+Terraform is used to create application resources. I personally think this isnt needed / overkill for local kubernetes deployment and for such a small application however if using cloud computing service like aws eks, IaC could be used to provision resources such as the cluster itself. It's a technology I don't have experience with so wanted to give it a try.
 
 Start you minikube cluster
 ```
@@ -132,3 +134,4 @@ kubectl port-forward pod/processout-helloworld-5bbbbf9c8d-7jc5x 8080:8080 -n che
 ```
 # With more time...
 - I would have deployed grafana to visualize the metrics
+- apply unit testing to terraform to avoid user errors, this could then be applied as an integration step in the pipeline and the bash script replaced with terraform

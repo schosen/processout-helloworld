@@ -8,7 +8,7 @@ on:
       - 'README.md'
 
 jobs:
-  docker-push:
+  docker-push-deploy:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -37,9 +37,6 @@ jobs:
 
       - name: Test cluster kubectl
         run: kubectl get pods -A
-
-      - name: Print current directory
-        run: pwd
 
       - name: Deploy to Minikube
         working-directory: manifests
