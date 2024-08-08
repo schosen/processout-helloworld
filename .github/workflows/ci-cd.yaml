@@ -36,7 +36,7 @@ jobs:
         uses: medyagh/setup-minikube@latest
 
       - name: Test cluster kubectl
-          run: kubectl get pods -A
+        run: kubectl get pods -A
 
       - name: Deploy to Minikube
         run: ./deploy.sh
