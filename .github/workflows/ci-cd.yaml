@@ -39,4 +39,4 @@ jobs:
         run: kubectl get pods -A
 
       - name: Deploy to Minikube
-        run: manifests/deploy.sh
+        run: cd manifests && ../deploy.sh
