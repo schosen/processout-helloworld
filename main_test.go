@@ -7,7 +7,7 @@ import (
 	"testing"
 )
 
-func TestHelloHandler(t *testing.T) {
+func TestGetHelloHandler(t *testing.T) {
 
 	req, err := http.NewRequest("GET", "/", nil)
 	if err != nil {
@@ -15,7 +15,7 @@ func TestHelloHandler(t *testing.T) {
 	}
 
 	rr := httptest.NewRecorder()
-	handler := http.HandlerFunc(helloHandler)
+	handler := http.HandlerFunc(getHelloHandler)
 
 	handler.ServeHTTP(rr, req)
 

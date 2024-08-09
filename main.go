@@ -2,10 +2,9 @@ package main
 
 import (
 	"fmt"
-	"log"
 	"net/http"
-	"io"
 	"time"
+	"encoding/json"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 )
@@ -42,36 +41,66 @@ func init() {
 	prometheus.MustRegister(errorsTotal)
 }
 
-func helloHandler(w http.ResponseWriter, r *http.Request) {
-	start := time.Now()
-
-	// Increment request counter
-	requestsTotal.WithLabelValues(r.URL.Path).Inc()
-
-	simulateError := false
-
-	if simulateError {
-		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
-		errorsTotal.WithLabelValues(r.URL.Path).Inc()
-		return
-	}
-
-	io.WriteString(w, "Hello, World!")
-
-	// Observe response duration
-	duration := time.Since(start).Seconds()
-	responseDuration.WithLabelValues(r.URL.Path).Observe(duration)
+type User struct {
+	ID   int    `json:"id"`
+	Name string `json:"name"`
+	Job string `json:"job"`
 }
 
+var users = []User{
+    {ID: 1, Name: "Sarah Chosen", Job: "DevOps Engineer"},
+    {ID: 2, Name: "John Doe", Job: "Builder"},
+    {ID: 3, Name: "Jane Doe", Job: "Actress"},
+}
+
+
 func main() {
-	// Register handlers
-	http.HandleFunc("/", helloHandler)
+	http.HandleFunc("/", loggingMiddleware(getHelloHandler))
+	http.HandleFunc("/users", loggingMiddleware(getUsersHandler))
 	http.Handle("/metrics", promhttp.Handler())
 
-	// Start server
-	port := 8080
-	log.Printf("Starting server on port %d", port)
-	if err := http.ListenAndServe(fmt.Sprintf(":%d", port), nil); err != nil {
-		log.Fatalf("Failed to start server: %v", err)
+	fmt.Println("Server started on port 8080")
+	if err := http.ListenAndServe(":8080", nil); err != nil {
+		fmt.Printf("Error starting server: %v\n", err)
+	}
+}
+
+func getHelloHandler(w http.ResponseWriter, r *http.Request) {
+	start := time.Now()
+
+	_, err := fmt.Fprintln(w, "Hello, World!")
+	duration := time.Since(start).Seconds()
+
+	// Update Prometheus metrics
+	requestsTotal.WithLabelValues("/").Inc()
+	responseDuration.WithLabelValues("/").Observe(duration)
+
+	if err != nil {
+		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+		errorsTotal.WithLabelValues("/").Inc()
+	}
+}
+
+func getUsersHandler(w http.ResponseWriter, r *http.Request) {
+	start := time.Now()
+
+	w.Header().Set("Content-Type", "application/json")
+	err := json.NewEncoder(w).Encode(users)
+	duration := time.Since(start).Seconds()
+
+	// Update Prometheus metrics
+	requestsTotal.WithLabelValues("/users").Inc()
+	responseDuration.WithLabelValues("/users").Observe(duration)
+
+	if err != nil {
+		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+		errorsTotal.WithLabelValues("/users").Inc()
+	}
+}
+
+func loggingMiddleware(next http.HandlerFunc) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		fmt.Printf("Received request: %s %s\n", r.Method, r.URL.Path)
+		next.ServeHTTP(w, r)
 	}
 }

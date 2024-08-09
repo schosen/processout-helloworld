@@ -30,6 +30,52 @@ docker build -t processout-helloworld .
 docker run -p 8080:8080 processout-helloworld
 ```
 
+## API
+
+Base URL `http://localhost:8080`
+
+
+#### Get Hello World Message
+- Endpoint: /
+- Method: GET
+- Description: Returns a simple "Hello, World!" message.
+- Example Request:
+    ```bash
+    curl -X GET http://localhost:8080/api/
+    ```
+- Response
+    - Status Code: `200 OK`
+    - Body
+
+    ```bash
+    Hello, World!
+    ```
+#### Get Users
+- Endpoint: /users
+- Method: GET
+- Description: Returns a list of users in JSON format.
+- Example Request:
+    ```bash
+    curl -X GET http://localhost:8080/api/users
+    ```
+- Response:
+    - Status Code: `200 OK`
+    - Body:
+    ```json
+    [
+        {
+            "id": 1,
+            "name": "Sarah Chosen",
+            "job": "DevOps Engineer"
+        },
+        {
+            "id": 2,
+            "name": "John Doe",
+            "job": "Builder"
+        }
+    ]
+    ```
+
 ## Metrics
 Prometheus metrics are exposed for this app. To view follow the above build and run commands and go to
 `
@@ -40,7 +86,7 @@ This application has prometheus monitoring. The following custom metrics are:
 
 - **requestsTotal**: a counter that tracks the total number of HTTP requests received by the server
 - **responseDuration**: a histogram that measures the duration of HTTP responses
--  **errorTotal**: a counter that tracks total number of errors returned by server (When set to true, the handler returns an "Internal Server Error" and increments the errorsTotal counter) Currently is hardcoded to false. In the real world you would replace the boolean with some logic.
+-  **errorTotal**: a counter that tracks total number of errors returned by server (When not nil, the handler returns an "Internal Server Error" and increments the errorsTotal counter).
 
 There are also "out the box" metrics related to memory consumption, cpu consumption, etc. e.g. `process_cpu_seconds_total` (Total user and system CPU time spent in seconds) and `process_virtual_memory_bytes` (Virtual memory size in bytes)
 
@@ -142,4 +188,5 @@ kubectl port-forward pod/processout-helloworld-5bbbbf9c8d-7jc5x 8080:8080 -n che
 ```
 # With more time...
 - I would have deployed grafana to visualize the metrics
-- I would apply unit testing to terraform to avoid user errors, this could then be applied as an integration step in the pipeline and the bash script replaced with terraform
+- I would improve test coverage. Apply unit testing to terraform to avoid user errors, this could then be applied as an integration step in the pipeline and the bash script replaced with terraform.
+- Update API to include standard api and version prefix
